@@ -120,7 +120,7 @@
 		interrupt-parent = <&gpio1>;
 		interrupts = <10 IRQ_TYPE_NONE>;
 		irq-is-id-quirk;
-		status ="okay";
+		status ="disbaled";
 
 		port {
 			typec1_dr_sw: endpoint {
