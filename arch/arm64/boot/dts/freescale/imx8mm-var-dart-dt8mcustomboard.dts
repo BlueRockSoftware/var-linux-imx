@@ -95,6 +95,14 @@
 		enable-active-high;
 	};
 
+	extcon_usb1: extcon_usb1 {
+		compatible = "linux,extcon-usb-gpio";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_extcon>;
+		id-gpio = <&gpio1 10 GPIO_ACTIVE_HIGH>;
+		status = "okay";
+	};
+
 	can0_osc: can0_osc {
 		compatible = "fixed-clock";
 		#clock-cells = <0>;
@@ -111,6 +119,7 @@
 	sda-gpios = <&gpio5 17 GPIO_ACTIVE_HIGH>;
 	status = "okay";
 
+<<<<<<< HEAD
 	/* USB Type-C Controller */
 	extcon_ptn5150: typec@3d {
 		compatible = "nxp,ptn5150";
@@ -129,6 +138,8 @@
 		};
 	};
 
+=======
+>>>>>>> 80c246381734 (reverting ptn5150 changes from variscite)
 	/* Capacitive touch controller */
 	ft5x06_ts: ft5x06_ts@38 {
 		compatible = "edt,edt-ft5206";
@@ -336,20 +347,14 @@
 
 &usbotg1 {
 	dr_mode = "otg";
+	picophy,pre-emp-curr-control = <3>;
+	picophy,dc-vol-level-adjust = <7>;
+	extcon = <0>,<&extcon_usb1>;
 	hnp-disable;
 	srp-disable;
 	adp-disable;
-	usb-role-switch;
 	disable-over-current;
-	samsung,picophy-pre-emp-curr-control = <3>;
-	samsung,picophy-dc-vol-level-adjust = <7>;
 	status = "okay";
-
-	port {
-		usb1_drd_sw: endpoint {
-			remote-endpoint = <&typec1_dr_sw>;
-		};
-	};
 };
 
 &usbotg2 {
