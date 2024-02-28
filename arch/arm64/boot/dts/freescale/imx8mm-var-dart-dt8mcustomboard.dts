@@ -119,27 +119,6 @@
 	sda-gpios = <&gpio5 17 GPIO_ACTIVE_HIGH>;
 	status = "okay";
 
-<<<<<<< HEAD
-	/* USB Type-C Controller */
-	extcon_ptn5150: typec@3d {
-		compatible = "nxp,ptn5150";
-		pinctrl-names = "default";
-		pinctrl-0 = <&pinctrl_extcon>;
-		reg = <0x3d>;
-		interrupt-parent = <&gpio1>;
-		interrupts = <10 IRQ_TYPE_NONE>;
-		irq-is-id-quirk;
-		status ="disbaled";
-
-		port {
-			typec1_dr_sw: endpoint {
-				remote-endpoint = <&usb1_drd_sw>;
-			};
-		};
-	};
-
-=======
->>>>>>> 80c246381734 (reverting ptn5150 changes from variscite)
 	/* Capacitive touch controller */
 	ft5x06_ts: ft5x06_ts@38 {
 		compatible = "edt,edt-ft5206";
