@@ -114,7 +114,7 @@
 	scl-gpios = <&gpio5 16 GPIO_ACTIVE_HIGH>;
 	sda-gpios = <&gpio5 17 GPIO_ACTIVE_HIGH>;
 	status = "okay";
-	};
+	
 
 	ov5640_mipi1: ov5640_mipi1@3c {
 		compatible = "ovti,ov5640_mipi";
@@ -185,6 +185,7 @@
 			line-name = "enet_sel";
 		};
 	};
+};
 
 &i2c3 {
 	/* Capacitive touch controller */
