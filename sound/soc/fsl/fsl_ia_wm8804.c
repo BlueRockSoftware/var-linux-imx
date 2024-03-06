@@ -29,6 +29,10 @@ struct snd_fsl_wm8805_drvdata {
 	int (*probe)(struct platform_device *pdev);
 };
 
+static struct snd_fsl_wm8805_drvdata drvdata_interludeaudio = {
+    .dai = interlude_audio_digital_dai,
+};
+
 static struct gpio_desc *clk_44gpio;
 static struct gpio_desc *clk_48gpio;
 static struct gpio_desc *reset;
@@ -163,6 +167,14 @@ SND_SOC_DAILINK_DEFS(interlude_audio_digital,
 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
 	DAILINK_COMP_ARRAY(COMP_EMPTY()));
 
+static struct snd_soc_dai_link snd_interlude_audio_digital_dai[] = {
+{
+	.name        = "Interlude Audio Digital",
+	.stream_name = "Interlude Audio Digital HiFi",
+	SND_SOC_DAILINK_REG(interlude_audio_digital),
+},
+};
+
 static int snd_wm8805_probe(struct platform_device *pdev)  {
     int ret = 0;
     const struct of_device_id *id;
@@ -243,3 +255,10 @@ static struct snd_soc_card fsl_wm8805_card = {
     .dai_link = NULL,
     .num_links = 1,
 };
+
+MODULE_DEVICE_TABLE(of, fsl_wm8805_of_match);
+module_platform_driver(fsl_WM8805_driver);
+
+MODULE_AUTHOR("Yash Gandhi <yash@bluerocksoft.com>");
+MODULE_DESCRIPTION("ASoC WM8805 driver"));
+MODULE_LICENSE("GPL V2");

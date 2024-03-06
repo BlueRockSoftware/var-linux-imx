@@ -314,6 +314,14 @@ config SND_SOC_IMX_SPDIF
 	  Say Y if you want to add support for SoC audio on an i.MX board with
 	  a S/DPDIF.
 
+config SND_SOC_FSL_WM8804
+	tristate "SoC audio support for interlude audio drivers"
+	depends on OF && I2C
+	select SND_SOC_FSL_WM8805
+	help 
+	 SoC audio support for interlude audio drivers
+	 say Y if you want to add support
+
 config SND_SOC_FSL_ASOC_CARD
 	tristate "Generic ASoC Sound Card with ASRC support"
 	depends on OF && I2C
