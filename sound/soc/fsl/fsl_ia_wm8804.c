@@ -14,7 +14,7 @@ struct wm8805_clk_cfg {
     unsigned int sysclk_freq;
     unsigned int mclk_freq;
     unsigned int mclk_div;
-}
+};
 
 struct snd_fsl_wm8805_drvdata {
 	/* Required - pointer to the DAI structure */
@@ -29,36 +29,32 @@ struct snd_fsl_wm8805_drvdata {
 	int (*probe)(struct platform_device *pdev);
 };
 
-static struct snd_fsl_wm8805_drvdata drvdata_interludeaudio = {
-    .dai = interlude_audio_digital_dai,
-};
-
 static struct gpio_desc *clk_44gpio;
 static struct gpio_desc *clk_48gpio;
 static struct gpio_desc *reset;
 static int rate = 0;
-
+static int sysclk_freq = 27000000;
 #define CLK44EN_RATE 22579200UL
 #define CLK48EN_RATE 24576000UL
 
 static const char * const wm8805_input_select_text[] = {
     "spdif",
-    "coax",
+    "coax"
 };
 static const unsigned int wm8805_input_select_values[] = {
     0,
-    1,
+    1
 };  
 
-static const struct soc_enum wm8805_input_select_enum = {
-    SOC_ENUM_SINGLE(WM8804_PLL6, 0, 2, wm8805_input_select_text, wm8805_input_select_values);
+static const struct soc_enum wm8805_input_select[] = {
+    SOC_VALUE_ENUM_SINGLE(WM8804_PLL6, 0, 7, ARRAY_SIZE(wm8805_input_select_text), wm8805_input_select_text, wm8805_input_select_values),
 };
 
 static const struct snd_kcontrol_new wm8805_controls[] = {
-    SOC_ENUM("Input Select", wm8805_input_select_enum),
+    SOC_ENUM("Input Select", wm8805_input_select[0]),
 };  
-static int wm8805_add_controls(struct snd_soc_codec *codec) {
-     snd_soc_add_codec_controls(codec, wm8805_controls, ARRAY_SIZE(wm8805_controls));
+static int wm8805_add_controls(struct snd_soc_component *component) {
+     snd_soc_add_component_controls(component, wm8805_controls, ARRAY_SIZE(wm8805_controls));
      return 0;
 }
 
@@ -73,24 +69,24 @@ static unsigned int snd_enable_clk(unsigned int rate) {
             gpiod_set_value(clk_48gpio, 0);
             return CLK44EN_RATE;
         default:
-            gpiod_set_value(clk_44gpio, 0);
             gpiod_set_value(clk_48gpio, 1);
+            gpiod_set_value(clk_44gpio, 0);
             return CLK48EN_RATE;
             }
 }
 
-static void snd_clk_cfg(unsigned int samplerate, struct wm8805_clk_cfg *cfg) {
+static void snd_clk_cfg(unsigned int samplerate, struct wm8805_clk_cfg *clk_cfg) {
     clk_cfg->sysclk_freq = sysclk_freq;
     
     if (samplerate <= 96000){
         clk_cfg->mclk_freq = samplerate * 256;
         clk_cfg->mclk_div = WM8804_MCLKDIV_256FS;
     }else{
-        cfg->mclock_freq = samplerate * 128;
-        cfg->mclk_div = WM8804_MCLKDIV_128FS; 
+        clk_cfg->mclk_freq = samplerate * 128;
+        clk_cfg->mclk_div = WM8804_MCLKDIV_128FS; 
     }
 
-    if((IS_ERR(clk_44gpio) || IS_ERR(clk_48gpio)) {
+    if(IS_ERR(clk_44gpio) || IS_ERR(clk_48gpio)) {
         clk_cfg->sysclk_freq = snd_enable_clk(samplerate);
     }
 }
@@ -139,7 +135,7 @@ static int snd_fsl_wm8805_hw_params(struct snd_pcm_substream *substream, struct 
         dev_err(rtd->card->dev, "Unsupported sample rate %d\n", samplerate);
     }
 
-    snd_soc_dai_set_clkdiv(codec_dai, WM8804_MCLKDIV, clk_cfg.mclk_div);
+    snd_soc_dai_set_clkdiv(codec_dai, WM8804_MCLK_DIV, clk_cfg.mclk_div);
     snd_soc_dai_set_pll(codec_dai, 0, 0, clk_cfg.sysclk_freq, clk_cfg.mclk_freq);
     ret = snd_soc_dai_set_sysclk(codec_dai, WM8804_TX_CLKSRC_PLL, clk_cfg.sysclk_freq, SND_SOC_CLOCK_OUT);
 
@@ -157,10 +153,17 @@ static struct snd_soc_ops snd_fsl_wm8805_ops = {
     .hw_params = snd_fsl_wm8805_hw_params,
 };
 
-static const struct of_device_id fsl_wm8805_of_match[] = {
-    { .compatible = "interludeaudio,interludeaudio-digital", .data = (void *) &drvdata_interludeaudio}
-    { }
-};
+static int snd_interlude_audio_init(struct snd_soc_pcm_runtime *rtd) {
+    struct snd_soc_component *component = asoc_rtd_to_codec(rtd, 0)->component;
+    int ret;
+
+     ret = wm8805_add_controls(component);
+    if (ret != 0)
+        pr_err("Failed to add controls: %d\n", ret);
+    
+    return 0;
+}
+
 
 SND_SOC_DAILINK_DEFS(interlude_audio_digital,
 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
@@ -171,19 +174,36 @@ static struct snd_soc_dai_link snd_interlude_audio_digital_dai[] = {
 {
 	.name        = "Interlude Audio Digital",
 	.stream_name = "Interlude Audio Digital HiFi",
+    .init = snd_interlude_audio_init,
 	SND_SOC_DAILINK_REG(interlude_audio_digital),
 },
 };
 
+static struct snd_fsl_wm8805_drvdata drvdata_interludeaudio = {
+    .dai = snd_interlude_audio_digital_dai,
+};
+
+static const struct of_device_id fsl_wm8805_of_match[] = {
+    { .compatible = "interludeaudio,interludeaudio-digital", .data = (void *) &drvdata_interludeaudio},
+    { },
+};
+
+static struct snd_soc_card fsl_wm8805_card = {
+    .name = "fsl-wm8805",
+    .owner = THIS_MODULE,
+    .dai_link = NULL,
+    .num_links = 1,
+};
+
 static int snd_wm8805_probe(struct platform_device *pdev)  {
     int ret = 0;
-    const struct of_device_id *id;
+    const struct of_device_id *of_id;
     fsl_wm8805_card.dev = &pdev->dev;
     of_id = of_match_node(fsl_wm8805_of_match, pdev->dev.of_node);
 
     if (pdev->dev.of_node && of_id->data){
         struct device_node *i2s_node;
-        struct snd_fsm_wm8805_drvdata *drvdata = (struct snd_fsm_wm8805_drvdata *)of_id->data;
+        struct snd_fsl_wm8805_drvdata *drvdata = (struct snd_fsl_wm8805_drvdata *)of_id->data;
         struct snd_soc_dai_link *dai = drvdata->dai;
 
         snd_soc_card_set_drvdata(&fsl_wm8805_card, drvdata);
@@ -229,7 +249,6 @@ static int snd_wm8805_probe(struct platform_device *pdev)  {
         mdelay(10);
         gpiod_set_value_cansleep(reset, 1);
 
-        ret = wm8805_add_controls(component);
         if (ret < 0){
             dev_err(&pdev->dev, "Failed to add controls: %d\n", ret);
         }
@@ -241,24 +260,29 @@ static int snd_wm8805_probe(struct platform_device *pdev)  {
                 return ret;
             }
         }
-        ret = devm_snd_soc_register_card(&pdev->dev, &fsl_wm8805_card);
-        if (ret && ret != -EPROBE_DEFER)
-            dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n", ret);
 
-        return ret;    
     }
+
+    ret = devm_snd_soc_register_card(&pdev->dev, &fsl_wm8805_card);
+    if (ret && ret != -EPROBE_DEFER)
+        dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n", ret);
+
+    return ret;    
+    
 }
 
-static struct snd_soc_card fsl_wm8805_card = {
-    .name = "fsl-wm8805",
-    .owner = THIS_MODULE,
-    .dai_link = NULL,
-    .num_links = 1,
+static struct platform_driver fsl_WM8805_driver = {
+    .driver = {
+        .name = "fsl-wm8805",
+        .owner = THIS_MODULE,
+        .of_match_table = fsl_wm8805_of_match,
+    },
+    .probe = snd_wm8805_probe,
 };
 
 MODULE_DEVICE_TABLE(of, fsl_wm8805_of_match);
 module_platform_driver(fsl_WM8805_driver);
 
 MODULE_AUTHOR("Yash Gandhi <yash@bluerocksoft.com>");
-MODULE_DESCRIPTION("ASoC WM8805 driver"));
-MODULE_LICENSE("GPL V2");
+MODULE_DESCRIPTION("ASoC WM8805 driver");
+MODULE_LICENSE("GPL v2");
