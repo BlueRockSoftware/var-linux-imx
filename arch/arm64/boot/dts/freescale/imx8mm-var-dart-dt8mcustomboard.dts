@@ -204,6 +204,14 @@
 		gpio-controller;
 		#gpio-cells = <2>;
 	};
+
+	wm8804: wm8804@3b {
+		compatible = "wlf,wm8804";
+		reg = <0x3b>;
+		PVDD-supply  = <&reg_audio>;
+		DVDD-suuply = <&reg_audio>;
+		status = "okay";
+	};
 };
 
 &mipi_csi_1 {

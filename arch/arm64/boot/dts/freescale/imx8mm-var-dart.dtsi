@@ -29,7 +29,7 @@
 
 	reg_audio: audio_vdd {
 		compatible = "regulator-fixed";
-		regulator-name = "wm8904_supply";
+		regulator-name = "wm8804_supply";
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
 		regulator-always-on;
@@ -394,6 +394,7 @@
 	cs4271: audio-codec@10 {
 		compatible = "cirrus,cs4271";
 		reg= <0x10>;
+		#sound-dai-cells = <0>;
 		clocks = <&clk IMX8MM_CLK_SAI3_ROOT>;
 		clock-names = "mclk";
 		reset-gpio = <&pinctrl_cs4271>;
@@ -773,6 +774,7 @@
 
 	pinctrl_cs4271: cs4271grp {
 
+	#gpio-cells = <0>;
 	fsl,pins = <
 		MX8MM_IOMUXC_GPIO1_IO12_GPIO1_IO12 0x16
 		>;
