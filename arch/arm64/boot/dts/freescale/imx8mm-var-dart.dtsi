@@ -51,7 +51,7 @@
 		/delete-node/ linux,cma;
 	};
 
-	sound-wm8904 {
+	/* sound-wm8904 {
 		compatible = "simple-audio-card";
 		simple-audio-card,bitclock-master = <&dailink_master>;
 		simple-audio-card,format = "i2s";
@@ -77,6 +77,33 @@
 		simple-audio-card,cpu {
 			sound-dai = <&sai3>;
 		};
+	};
+	*/
+
+	sound-cs4271{
+		compatible = "simple-audio-card";
+		simple-audio-card,bitclock-master = <&dailink_master>;
+		simple-audio-card,format = "i2s";
+		simple-audio-card,frame-master = <&dailink_master>;
+		simple-audio-card,name = "cs4272-IA";
+
+		simple-audio-card,routing = 
+				"Line Out","AOUTA+",
+				"Line Out","AOUTA-",
+				"Line Out","AOUTB+",
+				"Line Out","AOUTB-",
+				"AINA","Line In",
+				"AINB","Line In";
+		simple-audio-card,widgets = 
+				"Line", "Line In",
+				"Line", "Line Out";
+		simple-audio-card,cpu{
+			sound-dai = <&sai3>;
+		};
+		dailink_master: simple-audio-card,codec{
+			sound-dai = <&cs4271>;
+			};
+
 	};
 
 	sound-spdif {
@@ -361,7 +388,17 @@
 			0xffff /* GPIO3 => don't touch */
 			0xffff /* GPIO4 => don't touch */
 		>;
+		status = "disabled";
+	};
+
+	cs4271: audio-codec@10 {
+		compatible = "cirrus,cs4271";
+		reg= <0x10>;
+		clocks = <&clk IMX8MM_CLK_SAI3_ROOT>;
+		clock-names = "mclk";
+		reset-gpio = <&pinctrl_cs4271>;
 		status = "okay";
+		
 	};
 };
 
@@ -371,7 +408,7 @@
 	pinctrl-0 = <&pinctrl_sai3>;
 	assigned-clocks = <&clk IMX8MM_CLK_SAI3>;
 	assigned-clock-parents = <&clk IMX8MM_AUDIO_PLL1_OUT>;
-	assigned-clock-rates = <1536000>;
+	assigned-clock-rates = <2457600>;
 	status = "okay";
 };
 
@@ -731,6 +768,13 @@
 			MX8MM_IOMUXC_SAI5_RXD1_PDM_DATA1		0xd6
 			MX8MM_IOMUXC_SAI5_RXD2_PDM_DATA2		0xd6
 			MX8MM_IOMUXC_SAI5_RXD3_PDM_DATA3		0xd6
+		>;
+	};
+
+	pinctrl_cs4271: cs4271grp {
+
+	fsl,pins = <
+		MX8MM_IOMUXC_GPIO1_IO12_GPIO1_IO12 0x16
 		>;
 	};
 };
