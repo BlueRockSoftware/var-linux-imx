@@ -397,7 +397,7 @@
 		#sound-dai-cells = <0>;
 		clocks = <&clk IMX8MM_CLK_SAI3_ROOT>;
 		clock-names = "mclk";
-		reset-gpio = <&pinctrl_cs4271>;
+		reset-gpio =<&gpio1 12 GPIO_ACTIVE_HIGH>;
 		status = "okay";
 		
 	};
@@ -769,14 +769,6 @@
 			MX8MM_IOMUXC_SAI5_RXD1_PDM_DATA1		0xd6
 			MX8MM_IOMUXC_SAI5_RXD2_PDM_DATA2		0xd6
 			MX8MM_IOMUXC_SAI5_RXD3_PDM_DATA3		0xd6
-		>;
-	};
-
-	pinctrl_cs4271: cs4271grp {
-
-	#gpio-cells = <0>;
-	fsl,pins = <
-		MX8MM_IOMUXC_GPIO1_IO12_GPIO1_IO12 0x16
 		>;
 	};
 };
