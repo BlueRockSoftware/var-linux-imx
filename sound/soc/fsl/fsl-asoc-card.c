@@ -29,7 +29,7 @@
 #include "../codecs/wm8994.h"
 #include "../codecs/wm8904.h"
 
-#define CS427x_SYSCLK_MCLK = 24576000
+#define CS427x_SYSCLK_MCLK 24576000
 
 #define RX 0
 #define TX 1
