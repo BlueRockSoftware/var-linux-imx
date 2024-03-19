@@ -81,7 +81,7 @@
 	*/
 
 	sound-cs4271{
-		compatible = "simple-audio-card";
+		compatible = "fsl,imx-audio-cs427x";
 		simple-audio-card,bitclock-master = <&dailink_master>;
 		simple-audio-card,format = "i2s";
 		simple-audio-card,frame-master = <&dailink_master>;

@@ -29,7 +29,7 @@
 #include "../codecs/wm8994.h"
 #include "../codecs/wm8904.h"
 
-#define CS427x_SYSCLK_MCLK 0
+#define CS427x_SYSCLK_MCLK = 24576000
 
 #define RX 0
 #define TX 1
@@ -50,6 +50,7 @@ enum fsl_asoc_card_type {
 	CARD_SI476X,
 	CARD_WM8958,
 	CARD_WM8904,
+	CARD_CS4271,
 };
 
 /**
@@ -139,7 +140,6 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"CPU-Playback",  NULL, "ASRC-Playback"},
 	{"ASRC-Capture",  NULL, "CPU-Capture"},
 };
-
 static const struct snd_soc_dapm_route audio_map_ac97[] = {
 	/* 1st half -- Normal DAPM routes */
 	{"Playback",  NULL, "AC97 Playback"},
