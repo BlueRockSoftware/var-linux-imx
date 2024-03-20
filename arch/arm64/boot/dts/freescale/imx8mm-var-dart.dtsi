@@ -82,25 +82,25 @@
 
 	sound-cs4271{
 		compatible = "fsl,imx-audio-cs427x";
-		simple-audio-card,bitclock-master = <&dailink_master>;
-		simple-audio-card,format = "i2s";
-		simple-audio-card,frame-master = <&dailink_master>;
-		simple-audio-card,name = "cs4272-IA";
+		imx-audio-cs427x,bitclock-master = <&dailink_master>;
+		imx-audio-cs427x,format = "i2s";
+		imx-audio-cs427x,frame-master = <&dailink_master>;
+		imx-audio-cs427x,name = "cs4272-IA";
 
-		simple-audio-card,routing = 
+		imx-audio-cs427x,routing = 
 				"Line Out","AOUTA+",
 				"Line Out","AOUTA-",
 				"Line Out","AOUTB+",
 				"Line Out","AOUTB-",
 				"AINA","Line In",
 				"AINB","Line In";
-		simple-audio-card,widgets = 
+		imx-audio-cs427x,widgets = 
 				"Line", "Line In",
 				"Line", "Line Out";
-		simple-audio-card,cpu{
+		imx-audio-cs427x,cpu{
 			sound-dai = <&sai3>;
 		};
-		dailink_master: simple-audio-card,codec{
+		dailink_master: imx-audio-cs427x,codec{
 			sound-dai = <&cs4271>;
 			};
 
