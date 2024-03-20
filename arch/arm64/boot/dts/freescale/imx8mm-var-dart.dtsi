@@ -97,10 +97,12 @@
 		imx-audio-cs427x,widgets = 
 				"Line", "Line In",
 				"Line", "Line Out";
-		imx-audio-cs427x,cpu{
+		imx-audio-cs427x,audio-cpu{
 			sound-dai = <&sai3>;
+			dai-tdm-slot-num = <2>;
+			dai-tdm-slot-width = <32>;
 		};
-		dailink_master: imx-audio-cs427x,codec{
+		dailink_master: imx-audio-cs427x,audio-codec{
 			sound-dai = <&cs4271>;
 			};
 
