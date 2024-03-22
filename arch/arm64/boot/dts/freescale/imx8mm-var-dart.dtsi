@@ -397,7 +397,7 @@
 		#sound-dai-cells = <0>;
 		clocks = <&clk IMX8MM_CLK_SAI3_ROOT>;
 		clock-names = "mclk";
-		reset-gpio =<&gpio1 12 GPIO_ACTIVE_HIGH>;
+		reset-gpio = <&gpio1 12 GPIO_ACTIVE_HIGH>;
 		status = "okay";
 		
 	};
