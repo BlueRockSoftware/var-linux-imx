@@ -397,6 +397,7 @@
 		#sound-dai-cells = <0>;
 		clocks = <&clk IMX8MM_CLK_SAI3_ROOT>;
 		clock-names = "mclk";
+		pinctrl-0 = <&pinctrl_cs4271>;
 		reset-gpio = <&gpio1 12 GPIO_ACTIVE_HIGH>;
 		status = "okay";
 		
@@ -551,6 +552,10 @@
 			MX8MM_IOMUXC_ENET_TX_CTL_ENET1_RGMII_TX_CTL	0x1f
 			MX8MM_IOMUXC_GPIO1_IO09_GPIO1_IO9		0x19
 		>;
+	};
+
+	pinctrl_cs4271: cs4271reset {
+		fsl,pins = <MX8MM_IOMUXC_GPIO1_IO12_GPIO1_IO12>;
 	};
 
 	pinctrl_fec1_sleep: fec1grpsleep {
