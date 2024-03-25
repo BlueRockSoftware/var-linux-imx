@@ -83,7 +83,7 @@
 	sound-cs4271{
 		compatible = "fsl,imx-audio-cs427x";
 		format = "i2s";
-		routing = 
+		audio-routing = 
 				"Line Out","AOUTA+",
 				"Line Out","AOUTA-",
 				"Line Out","AOUTB+",
@@ -95,6 +95,7 @@
 				"Line", "Line Out";
 		audio-codec = <&cs4271>;
 		audio-cpu = <&sai3>;
+		reset-gpio = <&gpio1 12 GPIO_ACTIVE_HIGH>;
 		};
 
 	sound-spdif {
@@ -387,11 +388,8 @@
 		reg= <0x10>;
 		#sound-dai-cells = <0>;
 		clocks = <&clk IMX8MM_CLK_SAI3_ROOT>;
-		clock-names = "mclk";
-		pinctrl-0 = <&pinctrl_cs4271>;
 		reset-gpio = <&gpio1 12 GPIO_ACTIVE_HIGH>;
 		status = "okay";
-		
 	};
 };
 
