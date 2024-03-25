@@ -82,25 +82,20 @@
 
 	sound-cs4271{
 		compatible = "fsl,imx-audio-cs427x";
-		imx-audio-cs427x,format = "i2s";
-		imx-audio-cs427x,name = "cs4272-IA";
-
-		imx-audio-cs427x,routing = 
+		format = "i2s";
+		routing = 
 				"Line Out","AOUTA+",
 				"Line Out","AOUTA-",
 				"Line Out","AOUTB+",
 				"Line Out","AOUTB-",
 				"AINA","Line In",
 				"AINB","Line In";
-		imx-audio-cs427x,widgets = 
+		widgets = 
 				"Line", "Line In",
 				"Line", "Line Out";
 		audio-codec = <&cs4271>;
-		imx-audio-cs427x,audio-cpu{
-			sound-dai = <&sai3>;
+		audio-cpu = <&sai3>;
 		};
-
-	};
 
 	sound-spdif {
 		compatible = "fsl,imx-audio-spdif";
