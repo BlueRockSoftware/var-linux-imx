@@ -12,6 +12,7 @@
 #include <linux/of_platform.h>
 #include <linux/of_gpio.h>
 #include <linux/delay.h>
+#include <linux/gpio/consumer.h>
 #if IS_ENABLED(CONFIG_SND_AC97_CODEC)
 #include <sound/ac97_codec.h>
 #endif
@@ -39,6 +40,8 @@
 
 #define RX 0
 #define TX 1
+
+static struct gpio_desc *cs4272_reset_gpio;
 
 /* Default DAI format without Master and Slave flag */
 #define DAI_FMT_BASE (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF)
@@ -825,6 +828,14 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
 		priv->codec_priv.mclk_id = CS427x_SYSCLK_MCLK;
 		priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
 		priv->card_type = CARD_CS427X;
+		cs4272_reset_gpio = devm_gpiod_get(&pdev->dev, "reset-gpio", GPIOD_OUT_LOW);
+		if (IS_ERR(cs4272_reset_gpio)) {
+			ret = PTR_ERR(cs4272_reset_gpio);
+			dev_err(&pdev->dev, "Failed to get reset GPIO: %d\n", ret);
+		}
+		gpiod_set_value_cansleep(cs4272_reset_gpio, 0);
+		mdelay(1);
+		gpiod_set_value_cansleep(cs4272_reset_gpio, 1);
 		/*chip = gpiod_chip_open_by_name(gpiobank);
 		line = gpio_chip_get_line(chip, cs4272_reset);
 		int output_set_error = gpiod_line_request_output(line, CONSUMER, 0);
