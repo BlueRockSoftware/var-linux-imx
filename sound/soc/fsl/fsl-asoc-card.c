@@ -11,6 +11,7 @@
 #include <linux/module.h>
 #include <linux/of_platform.h>
 #include <linux/of_gpio.h>
+#include <linux/delay.h>
 #if IS_ENABLED(CONFIG_SND_AC97_CODEC)
 #include <sound/ac97_codec.h>
 #endif
@@ -28,6 +29,11 @@
 #include "../codecs/wm8960.h"
 #include "../codecs/wm8994.h"
 #include "../codecs/wm8904.h"
+
+//const char *gpiobank = "gpiochip0";
+//onst unsigned int cs4272_reset = 12;
+//struct gpiod_chip *chip;
+//struct gpiod_line *line;
 
 #define CS427x_SYSCLK_MCLK 24576000
 
@@ -774,6 +780,8 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
 				codec_dev_name = codec_pdev->name;
 			}
 		}
+		printk("codec_dev_name: %s\n", codec_dev_name);
+		printk("codec_dai_name: %s\n", codec_dai_name);
 	}
 
 	asrc_np = of_parse_phandle(np, "audio-asrc", 0);
@@ -817,6 +825,15 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
 		priv->codec_priv.mclk_id = CS427x_SYSCLK_MCLK;
 		priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
 		priv->card_type = CARD_CS427X;
+		/*chip = gpiod_chip_open_by_name(gpiobank);
+		line = gpio_chip_get_line(chip, cs4272_reset);
+		int output_set_error = gpiod_line_request_output(line, CONSUMER, 0);
+		int reset_error = gpiod_line_set_value(line, 0);
+		mdelay(1);
+		int reset_error_1 = gpiod_line_set_value(line, 1);
+		if(output_set_error < 0 || reset_error < 0 || reset_error_1 < 0){
+			printk("Error in setting the GPIO\n");
+		}*/
 	} else if (of_device_is_compatible(np, "fsl,imx-audio-sgtl5000")) {
 		codec_dai_name = "sgtl5000";
 		priv->codec_priv.mclk_id = SGTL5000_SYSCLK;
