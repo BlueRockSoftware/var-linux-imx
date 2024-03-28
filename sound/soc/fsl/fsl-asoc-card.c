@@ -12,7 +12,7 @@
 #include <linux/of_platform.h>
 #include <linux/of_gpio.h>
 #include <linux/delay.h>
-#include <linux/gpio/consumer.h>
+#include <linux/gpio.h>
 #if IS_ENABLED(CONFIG_SND_AC97_CODEC)
 #include <sound/ac97_codec.h>
 #endif
