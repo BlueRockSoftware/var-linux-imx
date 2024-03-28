@@ -385,8 +385,9 @@
 
 	cs4271: audio-codec@10 {
 		compatible = "cirrus,cs4271";
+		pinctrl-names = "default";
 		reg= <0x10>;
-		reset-gpio = <&gpio1 12 GPIO_ACTIVE_HIGH>;
+		reset = <&pinctrl_cs4271>;
 		status = "okay";
 	};
 };
