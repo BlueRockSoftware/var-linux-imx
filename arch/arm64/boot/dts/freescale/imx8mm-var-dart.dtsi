@@ -83,6 +83,8 @@
 	sound-cs4271{
 		compatible = "fsl,imx-audio-cs427x";
 		format = "i2s";
+		pinctrl-names = "default";
+		pinctrl-0 =  <&pinctrl_cs4271>;
 		audio-routing = 
 				"Line Out","AOUTA+",
 				"Line Out","AOUTA-",
@@ -95,7 +97,6 @@
 				"Line", "Line Out";
 		audio-codec = <&cs4271>;
 		audio-cpu = <&sai3>;
-		reset-gpio = <&gpio1 12 GPIO_ACTIVE_LOW>;
 		};
 
 	sound-spdif {
@@ -387,7 +388,7 @@
 		compatible = "cirrus,cs4271";
 		pinctrl-names = "default";
 		reg= <0x10>;
-		reset = <&pinctrl_cs4271>;
+		reset = <&gpio1 12 GPIO_ACTIVE_HIGH>;
 		status = "okay";
 	};
 };
