@@ -96,7 +96,9 @@
 				"Line", "Line In",
 				"Line", "Line Out";
 		audio-codec = <&cs4271>;
+		reset-gpio = <&gpio1 12 GPIO_ACTIVE_HIGH>;
 		audio-cpu = <&sai3>;
+
 		};
 
 	sound-spdif {
