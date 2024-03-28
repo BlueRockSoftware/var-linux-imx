@@ -829,6 +829,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
 		priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
 		priv->card_type = CARD_CS427X;
 		cs4272_reset_gpio = of_get_named_gpio(np, "reset-gpio", 0);
+		printk("value of cs4272_reset_gpio: %d\n", cs4272_reset_gpio);
 		gpio_set_value(cs4272_reset_gpio, 0);
 		mdelay(1);
 		gpio_set_value(cs4272_reset_gpio, 1);
