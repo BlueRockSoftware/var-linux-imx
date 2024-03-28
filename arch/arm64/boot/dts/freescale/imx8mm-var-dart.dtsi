@@ -386,10 +386,6 @@
 	cs4271: audio-codec@10 {
 		compatible = "cirrus,cs4271";
 		reg= <0x10>;
-		#sound-dai-cells = <0>;
-		pinctrl-names = "default";
-		pinctrl-0 = <&pinctrl_cs4271>;
-		clocks = <&clk IMX8MM_CLK_SAI3_ROOT>;
 		reset-gpio = <&gpio1 12 GPIO_ACTIVE_HIGH>;
 		status = "okay";
 	};
