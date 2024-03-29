@@ -490,6 +490,7 @@ static int imx_card_parse_of(struct imx_card_data *data)
 	struct of_phandle_args args;
 	int ret, num_links;
 	u32 width;
+	printk("hello from imx_card_parse_of\n");
 
 	ret = snd_soc_of_parse_card_name(card, "model");
 	if (ret) {

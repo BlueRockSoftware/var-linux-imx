@@ -82,26 +82,23 @@
 
 	sound-cs4271{
 		compatible = "imx-audio-card";
-		imx-audio-card,format = "i2s";
-		imx-audio-card,name = "snd_IA_Analog_Hat";
-		imx-audio-card,frame-master = <&dailink_master>;
-		imx-audio-card,bitclock-master = <&dailink_master>;
-		imx-audio-card,audio-routing = 
+		model = "snd_IA_Analog_Hat";
+		audio-routing = 
 				"Line Out","AOUTA+",
 				"Line Out","AOUTA-",
 				"Line Out","AOUTB+",
 				"Line Out","AOUTB-",
 				"AINA","Line In",
 				"AINB","Line In";
-		imx-audio-card,widgets = 
+		widgets = 
 				"Line", "Line In",
 				"Line", "Line Out";
-		imx-audio-card,cpu {
+		cpu {
 				sound-dai = <&sai3>;
 				dai-tdm-slot-num = <2>;
 				dai-tdm-slot-width = <32>;
 			};
-		dailink_master: imx-audio-card,codec {
+		codec {
 				sound-dai = <&cs4271>;
 				system-clock-frequency = <24576000>;
 			};
