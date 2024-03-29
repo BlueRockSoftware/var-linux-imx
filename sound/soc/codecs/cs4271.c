@@ -487,7 +487,7 @@ static struct snd_soc_dai_driver cs4271_dai = {
 static int cs4271_reset(struct snd_soc_component *component)
 {
 	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
-
+	printk("reset value at cs4271 driver module is %d\n", cs4271->gpio_nreset);
 	if (gpio_is_valid(cs4271->gpio_nreset)) {
 		gpio_direction_output(cs4271->gpio_nreset, 0);
 		mdelay(1);
