@@ -590,6 +590,7 @@ static int cs4271_component_probe(struct snd_soc_component *component)
 	}
 
 	/* Reset codec */
+	printk("module probe and reset function call \n");
 	cs4271_reset(component);
 
 	ret = regcache_sync(cs4271->regmap);
