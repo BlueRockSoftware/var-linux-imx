@@ -643,6 +643,7 @@ static int simple_soc_probe(struct snd_soc_card *card)
 {
 	struct asoc_simple_priv *priv = snd_soc_card_get_drvdata(card);
 	int ret;
+	printk("hello from simple_soc_probe\n");
 
 	ret = asoc_simple_init_hp(card, &priv->hp_jack, PREFIX);
 	if (ret < 0)
