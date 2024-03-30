@@ -581,6 +581,7 @@ static int imx_card_parse_of(struct imx_card_data *data)
 		link->cpus->of_node = args.np;
 		link->platforms->of_node = link->cpus->of_node;
 		link->id = args.args[0];
+		printk("gettind DAI name\n");
 
 		ret = snd_soc_of_get_dai_name(cpu, &link->cpus->dai_name);
 		if (ret) {
@@ -588,7 +589,7 @@ static int imx_card_parse_of(struct imx_card_data *data)
 				      "%s: error getting cpu dai name\n", link->name);
 			goto err;
 		}
-
+		printk("DAI name is %s\n",link->cpus->dai_name);
 		codec = of_get_child_by_name(np, "codec");
 		if (codec) {
 			ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
@@ -597,7 +598,7 @@ static int imx_card_parse_of(struct imx_card_data *data)
 						link->name);
 				goto err;
 			}
-
+		printk("getting codec \n");	
 			plat_data->num_codecs = link->num_codecs;
 
 			/* Check the akcodec type */
@@ -694,15 +695,20 @@ static int imx_card_parse_of(struct imx_card_data *data)
 		of_node_put(codec);
 		of_node_put(platform);
 	}
-
+printk("end of the function of_parse\n");
 	return 0;
+
+
 err:
 	of_node_put(cpu);
 	of_node_put(codec);
 	of_node_put(platform);
+	printk("there is err present please fix\n");
 err_put_np:
 	of_node_put(np);
+	printk("there is err_put_np present please fix\n");
 	return ret;
+
 }
 
 static int imx_card_probe(struct platform_device *pdev)
@@ -711,7 +717,7 @@ static int imx_card_probe(struct platform_device *pdev)
 	struct imx_card_plat_data *plat_data;
 	struct imx_card_data *data;
 	int ret, i;
-
+	printk("hello from imx_card_probe\n");
 	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
 	if (!data)
 		return -ENOMEM;
@@ -726,6 +732,7 @@ static int imx_card_probe(struct platform_device *pdev)
 	dev_set_drvdata(&pdev->dev, &data->card);
 	snd_soc_card_set_drvdata(&data->card, data);
 	ret = imx_card_parse_of(data);
+	printk("ret is %d\n",ret);
 	if (ret)
 		return ret;
 

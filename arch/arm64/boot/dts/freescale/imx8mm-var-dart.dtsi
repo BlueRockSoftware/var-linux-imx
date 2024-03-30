@@ -99,9 +99,8 @@
 				dai-tdm-slot-width = <32>;
 			};
 		codec {
-				sound-dai = <&cs4271>;
-				system-clock-frequency = <24576000>;
-			};
+			dai = <&cs4271>;
+		};
 
 		};
 
