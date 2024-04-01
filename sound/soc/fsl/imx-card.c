@@ -537,12 +537,14 @@ static int imx_card_parse_of(struct imx_card_data *data)
 		ret = of_property_read_string(np, "link-name", &link->name);
 		if (ret) {
 			dev_err(card->dev, "error getting codec dai_link name\n");
+			printk("error getting codec dai_link name\n");
 			goto err_put_np;
 		}
 
 		cpu = of_get_child_by_name(np, "cpu");
 		if (!cpu) {
 			dev_err(dev, "%s: Can't find cpu DT node\n", link->name);
+			printk("could not find CPU node in DT node\n");
 			ret = -EINVAL;
 			goto err;
 		}
@@ -551,6 +553,7 @@ static int imx_card_parse_of(struct imx_card_data *data)
 						 "#sound-dai-cells", 0, &args);
 		if (ret) {
 			dev_err(card->dev, "%s: error getting cpu phandle\n", link->name);
+			printk("error getting cpu phandle\n");
 			goto err;
 		}
 
