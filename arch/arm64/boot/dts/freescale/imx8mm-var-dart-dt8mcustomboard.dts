@@ -108,6 +108,16 @@
 		#clock-cells = <0>;
 		clock-frequency = <40000000>;
 	};
+
+	sound_fsl_ia_wm8805 {
+		compatible = "interludeaudio,interludeaudio-digital";
+		i2s-controller = <&sai2>;
+		status = "okay";
+		clk44 = <&gpio4 21 GPIO_ACTIVE_HIGH>;
+		clk88 = <&gpio4 22 GPIO_ACTIVE_HIGH>;
+		reset = <&gpio1 7 GPIO_ACTIVE_HIGH>;
+
+	};
 };
 
 &i2c2 {

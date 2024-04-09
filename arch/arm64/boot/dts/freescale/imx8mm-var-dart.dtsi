@@ -81,23 +81,32 @@
 	*/
 
 	sound-cs4271{
-		compatible = "imx-audio-card";
-		model = "snd_IA_Analog_Hat";
-		audio-routing = 
+		compatible = "simple-audio-card";
+		simple-audio-card,widgets = 
+		"Line", "Line In",			
+		"Line", "Line Out";
+		simple-audio-card,audio-routing = 
 				"Line Out","AOUTA+",
 				"Line Out","AOUTA-",
 				"Line Out","AOUTB+",
 				"Line Out","AOUTB-",
 				"AINA","Line In",
 				"AINB","Line In";
-		widgets = 
-				"Line", "Line In",
-				"Line", "Line Out";
-		codec {
-			sound-dai = <&cs4271>;
+		simple-audio-card,format = "i2s";
+		simple-audio-card,bitclock-master = <&dailink_master>;
+		simple-audio-card,frame-master = <&dailink_master>;
+		simple-audio-card,cpu {
+			sound-dai = <&sai3>;
+				dai-tdm-slot-num = <2>;
+				dai-tdm-slot-width = <32>;
 		};
 
+		dailink_master: simple-audio-card,codec {
+			sound-dai = <&codec_i2c>;
+			system-clock-frequency = <24576000>;
 		};
+	};
+
 
 	sound-spdif {
 		compatible = "fsl,imx-audio-spdif";
@@ -108,7 +117,7 @@
 		status = "disabled";
 	};
 
-	sound-micfil {
+	/*sound-micfil {
 		compatible = "fsl,imx-audio-card";
 		model = "imx-audio-micfil";
 		pri-dai-link {
@@ -118,8 +127,32 @@
 				sound-dai = <&micfil>;
 			};
 		};
-	};
+	};*/
+
+
+
 };
+
+&i2c3{ 
+	clock-frequency = <100000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_i2c3>;
+	status = "okay";
+
+	codec_i2c: cs4271@10 {
+		#sound-dai-cells = <0>;
+		compatible = "cirrus,cs4271";
+		reg = <0x10>;
+		reset-gpio = <&gpio1 12 GPIO_ACTIVE_HIGH>;
+		vd-supply = <&reg_audio>;
+		vl-supply = <&reg_audio>;
+		va-supply = <&reg_audio>;
+		status = "okay";
+	};
+
+};
+
+
 
 &A53_0 {
 	cpu-supply = <&buck2_reg>;
@@ -384,13 +417,6 @@
 		status = "disabled";
 	};
 
-	cs4271: audio-codec@10 {
-		#sound-dai-cells = <0>;
-		compatible = "cirrus,cs4271";
-		reg = <0x10>;
-		reset = <&gpio1 12 GPIO_ACTIVE_HIGH>;
-		status = "okay";
-	};
 };
 
 &sai3 {
@@ -615,13 +641,10 @@
 
 	pinctrl_sai3: sai3grp {
 		fsl,pins = <
-			MX8MM_IOMUXC_SAI3_RXFS_SAI3_RX_SYNC		0xd6
-			MX8MM_IOMUXC_SAI3_RXC_SAI3_RX_BCLK		0xd6
 			MX8MM_IOMUXC_SAI3_RXD_SAI3_RX_DATA0		0xd6
 			MX8MM_IOMUXC_SAI3_TXFS_SAI3_TX_SYNC		0xd6
 			MX8MM_IOMUXC_SAI3_TXC_SAI3_TX_BCLK		0xd6
 			MX8MM_IOMUXC_SAI3_TXD_SAI3_TX_DATA0		0xd6
-			MX8MM_IOMUXC_SAI3_MCLK_SAI3_MCLK		0xd6
 		>;
 	};
 
