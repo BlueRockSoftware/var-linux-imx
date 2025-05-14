@@ -143,6 +143,8 @@
 		#sound-dai-cells = <0>;
 		compatible = "cirrus,cs4271";
 		reg = <0x10>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_cs4271>;
 		reset-gpio = <&gpio1 12 GPIO_ACTIVE_HIGH>;
 		vd-supply = <&reg_audio>;
 		vl-supply = <&reg_audio>;
@@ -375,57 +377,14 @@
 	};
 };
 
-&i2c3 {
-	clock-frequency = <100000>;
-	pinctrl-names = "default", "gpio";
-	pinctrl-0 = <&pinctrl_i2c3>;
-	pinctrl-1 = <&pinctrl_i2c3_gpio>;
-	scl-gpios = <&gpio5 18 GPIO_ACTIVE_HIGH>;
-	sda-gpios = <&gpio5 19 GPIO_ACTIVE_HIGH>;
-	status = "okay";
-
-	wm8904: audio-codec@1a {
-		compatible = "wlf,wm8904";
-		#sound-dai-cells = <0>;
-		reg = <0x1a>;
-		clocks = <&clk IMX8MM_CLK_SAI3_ROOT>;
-		clock-names = "mclk";
-		DBVDD-supply = <&reg_audio>;
-		DCVDD-supply = <&ldo5_reg>;
-		AVDD-supply = <&ldo5_reg>;
-		CPVDD-supply = <&ldo5_reg>;
-		MICVDD-supply = <&ldo5_reg>;
-		num-drc-cfgs = <5>;
-		drc-cfg-names = "default", "peaklimiter", "tradition", "soft", "music";
-		drc-cfg-regs =
-			/* coded default: KNEE_IP = KNEE_OP = 0, HI_COMP = LO_COMP = 1  */
-			<0x01af 0x3248 0x0000 0x0000>,
-			/* coded default: KNEE_IP = -24, KNEE_OP = -6, HI_COMP = 1/4, LO_COMP = 1 */
-			<0x04af 0x324b 0x0010 0x0408>,
-			/* coded default: KNEE_IP = -42, KNEE_OP = -3, HI_COMP = 0, LO_COMP = 1 */
-			<0x04af 0x324b 0x0028 0x0704>,
-			/* coded default: KNEE_IP = -45, KNEE_OP = -9, HI_COMP = 1/8, LO_COMP = 1 */
-			<0x04af 0x324b 0x0018 0x078c>,
-			/* coded default: KNEE_IP = -30, KNEE_OP = -10.5, HI_COMP = 1/4, LO_COMP = 1 */
-			<0x04af 0x324b 0x0010 0x050e>;
-		gpio-cfg = <
-			0x0018 /* GPIO1 => DMIC_CLK */
-			0xffff /* GPIO2 => don't touch */
-			0xffff /* GPIO3 => don't touch */
-			0xffff /* GPIO4 => don't touch */
-		>;
-		status = "disabled";
-	};
-
-};
-
 &sai3 {
 	#sound-dai-cells = <0>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_sai3>;
 	assigned-clocks = <&clk IMX8MM_CLK_SAI3>;
 	assigned-clock-parents = <&clk IMX8MM_AUDIO_PLL1_OUT>;
-	assigned-clock-rates = <2457600>;
+	assigned-clock-rates = <24576000>;
+	fsl,sai-synchronous-rx;
 	status = "okay";
 };
 
@@ -569,8 +528,10 @@
 		>;
 	};
 
-	pinctrl_cs4271: cs4271reset {
-		fsl,pins = <MX8MM_IOMUXC_GPIO1_IO12_GPIO1_IO12 0x19>;
+	pinctrl_cs4271: cs4271grp {
+		fsl,pins = <
+			MX8MM_IOMUXC_GPIO1_IO12_GPIO1_IO12    0x16
+		>;
 	};
 
 	pinctrl_fec1_sleep: fec1grpsleep {
@@ -641,10 +602,10 @@
 
 	pinctrl_sai3: sai3grp {
 		fsl,pins = <
-			MX8MM_IOMUXC_SAI3_RXD_SAI3_RX_DATA0		0xd6
-			MX8MM_IOMUXC_SAI3_TXFS_SAI3_TX_SYNC		0xd6
-			MX8MM_IOMUXC_SAI3_TXC_SAI3_TX_BCLK		0xd6
-			MX8MM_IOMUXC_SAI3_TXD_SAI3_TX_DATA0		0xd6
+			MX8MM_IOMUXC_SAI3_RXD_SAI3_RX_DATA0   0xd6
+			MX8MM_IOMUXC_SAI3_TXFS_SAI3_TX_SYNC   0xd6
+			MX8MM_IOMUXC_SAI3_TXC_SAI3_TX_BCLK    0xd6
+			MX8MM_IOMUXC_SAI3_TXD_SAI3_TX_DATA0   0xd6
 		>;
 	};
 
