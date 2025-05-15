@@ -80,33 +80,34 @@
 	};
 	*/
 
-	sound-cs4271{
+	sound-cs4271 {
 		compatible = "simple-audio-card";
+		simple-audio-card,name = "cs4271-audio";
 		simple-audio-card,widgets = 
-		"Line", "Line In",			
-		"Line", "Line Out";
+			"Line", "Line In",			
+			"Line", "Line Out";
 		simple-audio-card,audio-routing = 
-				"Line Out","AOUTA+",
-				"Line Out","AOUTA-",
-				"Line Out","AOUTB+",
-				"Line Out","AOUTB-",
-				"AINA","Line In",
-				"AINB","Line In";
+			"Line Out","AOUTA+",
+			"Line Out","AOUTA-",
+			"Line Out","AOUTB+",
+			"Line Out","AOUTB-",
+			"AINA","Line In",
+			"AINB","Line In";
 		simple-audio-card,format = "i2s";
 		simple-audio-card,bitclock-master = <&dailink_master>;
 		simple-audio-card,frame-master = <&dailink_master>;
+
 		simple-audio-card,cpu {
 			sound-dai = <&sai3>;
-				dai-tdm-slot-num = <2>;
-				dai-tdm-slot-width = <32>;
+			dai-tdm-slot-num = <2>;
+			dai-tdm-slot-width = <32>;
 		};
 
 		dailink_master: simple-audio-card,codec {
 			sound-dai = <&codec_i2c>;
-			system-clock-frequency = <24576000>;
+			system-clock-frequency = <22579200>;
 		};
 	};
-
 
 	sound-spdif {
 		compatible = "fsl,imx-audio-spdif";
@@ -382,9 +383,10 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_sai3>;
 	assigned-clocks = <&clk IMX8MM_CLK_SAI3>;
-	assigned-clock-parents = <&clk IMX8MM_AUDIO_PLL1_OUT>;
-	assigned-clock-rates = <24576000>;
+	assigned-clock-parents = <&clk IMX8MM_AUDIO_PLL2_OUT>;
+	assigned-clock-rates = <22579200>;
 	fsl,sai-synchronous-rx;
+	fsl,dataline = <0 0xf 0xf>;
 	status = "okay";
 };
 
