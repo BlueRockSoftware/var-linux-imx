@@ -83,6 +83,9 @@
 	sound-cs4271 {
 		compatible = "simple-audio-card";
 		simple-audio-card,name = "cs4271-audio";
+		simple-audio-card,format = "i2s";
+		simple-audio-card,bitclock-master = <&dailink_master>;
+		simple-audio-card,frame-master = <&dailink_master>;
 		simple-audio-card,widgets = 
 			"Line", "Line In",			
 			"Line", "Line Out";
@@ -93,19 +96,17 @@
 			"Line Out","AOUTB-",
 			"AINA","Line In",
 			"AINB","Line In";
-		simple-audio-card,format = "i2s";
-		simple-audio-card,bitclock-master = <&dailink_master>;
-		simple-audio-card,frame-master = <&dailink_master>;
 
 		simple-audio-card,cpu {
 			sound-dai = <&sai3>;
 			dai-tdm-slot-num = <2>;
 			dai-tdm-slot-width = <32>;
+			frame-inversion;
 		};
 
 		dailink_master: simple-audio-card,codec {
 			sound-dai = <&codec_i2c>;
-			system-clock-frequency = <22579200>;
+			system-clock-frequency = <24576000>;
 		};
 	};
 
@@ -380,13 +381,10 @@
 
 &sai3 {
 	#sound-dai-cells = <0>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_sai3>;
-	assigned-clocks = <&clk IMX8MM_CLK_SAI3>;
-	assigned-clock-parents = <&clk IMX8MM_AUDIO_PLL2_OUT>;
-	assigned-clock-rates = <22579200>;
-	fsl,sai-synchronous-rx;
-	fsl,dataline = <0 0xf 0xf>;
+	/delete-property/ fsl,sai-asynchronous;
+	/delete-property/ fsl,sai-multi-lane;
+	dmas = <&sdma2 8 2 0>, <&sdma2 9 2 0>;
+	assigned-clock-rates = <24576000>;
 	status = "okay";
 };
 
